@@ -89,13 +89,9 @@ class Simulation:
 
 if __name__ == "__main__":
   course = Course(20000)
-  course.add_height(0,0)
-  course.add_height(5000,500)
-  course.add_height(7000,300)
-  course.add_height(20000, 0)
+  course.from_gpx_segments('ride.gpx')
   rider1 = Rider(name="Alice", mass=70)
-  rider2 = Rider(name="Bob", mass=80)
-  sim = Simulation(course=course, riders=[rider1, rider2])
+  sim = Simulation(course=course, riders=[rider1])
 
   with open("out.dat", "w") as outfile:
     sim.print_header(outfile)
@@ -104,8 +100,16 @@ if __name__ == "__main__":
       sim.timestep()
   
   df = pd.read_csv("out.dat", sep="\s+")
-  ax = plt.gca()
-  df.plot(kind='line',x='Time',y='Alice_velocity',ax=ax)
-  df.plot(kind='line',x='Time',y='Bob_velocity',ax=ax)
+  figure, axis = plt.subplots(2, 2)
+  axis[0,0].set_title("Course Elevation")
+  df.plot(kind='line',x='Alice_position',y='Alice_height',ax=axis[0, 0])
+  axis[0,1].set_title("Velocity")
+  df.plot(kind='line',x='Alice_position',y='Alice_velocity',ax=axis[0, 1])
+  axis[1,0].set_title("Gradient")
+  df.plot(kind='line',x='Alice_position',y='Alice_grade',ax=axis[1, 0])
+  axis[1,1].set_title("Power output")
+  df.plot(kind='line',x='Alice_position',y='Alice_power',ax=axis[1, 1])
+
+
   plt.show()
  

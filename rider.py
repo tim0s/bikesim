@@ -15,6 +15,6 @@ class Rider:
     return self.frontalArea * self.dragCoeff
 
   def getCurrentPower(self):
-    return 300
+    return 100
 
 

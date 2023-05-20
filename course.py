@@ -3,9 +3,33 @@ class Course:
     self.length = length
     self.heights = []
 
+  def from_gpx_segments(self, filename):
+    import gpxpy
+    import gpxpy.gpx
+    import geopy.distance
+    self.length = None
+    self.heights = []
+    gpx_file = open(filename, 'r')
+    gpx = gpxpy.parse(gpx_file)
+    last = None
+    total_length = 0
+    for track in gpx.tracks:
+      for segment in track.segments:
+        for point in segment.points:
+          if last is None:
+            last = point
+            self.add_height(0, point.elevation)
+            continue
+          coords_1 = (last.latitude, last.longitude)
+          coords_2 = (point.latitude, point.longitude)
+          dist = geopy.distance.geodesic(coords_1, coords_2).meters
+          total_length += dist
+          self.add_height(total_length, point.elevation)
+          last = point
+    self.length = total_length
+
+
   def add_height(self, pos, height):
-    if (pos < 0) or (pos > self.length):
-      raise ValueError("pos invalid")
     self.heights += [(pos, height)]
     self.heights = sorted(self.heights)
 
