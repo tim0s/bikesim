@@ -1,0 +1,5 @@
+* implement height smoothing for gpx track import
+* output power usage (air drag, gravity)
+* implement a model for power curves
+* implement drafting benefit for multiple riders
+
